@@ -53,50 +53,197 @@ class _LineupScreenState extends State<LineupScreen> {
           ),
           centerTitle: true,
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(left: 15, right: 15),
+        body: SafeArea(
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(height: 40),
-                Container(
-                  height: size.height * 0.6,
-                  width: size.width,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 3,
-                        blurRadius: 3,
-                        offset:
-                            const Offset(0, 4), // changes position of shadow
-                      ),
-                    ],
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15, right: 15),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Container(
+                    height: size.height * 0.6,
+                    width: size.width,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 3,
+                          blurRadius: 3,
+                          offset:
+                              const Offset(0, 4), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                          'assets/images/lineup_board.png',
+                          fit: BoxFit.cover,
+                          width: size.width,
+                          height: size.height * 0.6,
+                        ),
+                        ...players.map((player) {
+                          return Positioned(
+                            top: player.top * size.height * 0.6,
+                            left: player.left * size.width,
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage(player.image),
+                              radius: 30,
+                            ),
+                          );
+                        }).toList(),
+                      ],
+                    ),
                   ),
-                  child: Stack(
-                    children: [
-                      Image.asset(
-                        'assets/images/lineup_board.png',
-                        fit: BoxFit.cover,
-                        width: size.width,
-                        height: size.height * 0.6,
-                      ),
-                      ...players.map((player) {
-                        return Positioned(
-                          top: player.top * size.height * 0.6,
-                          left: player.left * size.width,
-                          child: CircleAvatar(
-                            backgroundImage: AssetImage(player.image),
-                            radius: 30,
+                  const SizedBox(height: 20),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: size.height * 0.05,
+                          width: size.width * 0.4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: AppColors.tosca,
                           ),
-                        );
-                      }).toList(),
-                    ],
+                          child: const Center(
+                            child: Text(
+                              'Pemain Cadangan',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                Image.asset(
+                                  "assets/images/player_jersey.png",
+                                  height: 55,
+                                  width: 55,
+                                ),
+                                const Text(
+                                  'Kiper',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Image.asset(
+                                  "assets/images/kiper_jersey.png",
+                                  height: 55,
+                                  width: 55,
+                                ),
+                                const Text(
+                                  'Anchor',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Image.asset(
+                                  "assets/images/kiper_jersey.png",
+                                  height: 55,
+                                  width: 55,
+                                ),
+                                const Text(
+                                  'Anchor',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Image.asset(
+                                  "assets/images/kiper_jersey.png",
+                                  height: 55,
+                                  width: 55,
+                                ),
+                                const Text(
+                                  'Flank',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Image.asset(
+                                  "assets/images/kiper_jersey.png",
+                                  height: 55,
+                                  width: 55,
+                                ),
+                                const Text(
+                                  'Flank',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Image.asset(
+                                  "assets/images/kiper_jersey.png",
+                                  height: 55,
+                                  width: 55,
+                                ),
+                                const Text(
+                                  'Pivot',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Image.asset(
+                                  "assets/images/kiper_jersey.png",
+                                  height: 55,
+                                  width: 55,
+                                ),
+                                const Text(
+                                  'Pivot',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                )
-              ],
+                  const SizedBox(height: 30),
+                ],
+              ),
             ),
           ),
         ));

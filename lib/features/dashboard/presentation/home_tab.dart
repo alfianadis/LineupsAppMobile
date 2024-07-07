@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lineups/features/dashboard/presentation/home_secreen.dart';
 import 'package:lineups/features/lineup/presentation/lineup_screen.dart';
 import 'package:lineups/features/player/presentation/player_screen.dart';
+import 'package:lineups/features/statistik/presentation/statistik_screen.dart';
 import 'package:lineups/utils/asset_path.dart';
 import 'package:lineups/utils/colors.dart';
 
@@ -24,6 +25,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   final List<Widget> _children = [
     const HomeScreen(),
     const PlayerScreen(),
+    const StatistikScreen(),
     const LineupScreen(),
   ];
 
@@ -84,12 +86,23 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                 ),
                 label: 'Pemain',
               ),
+              //statistik
+              BottomNavigationBarItem(
+                icon: Image.asset(
+                  AssetPath.icOrder,
+                  width: 20,
+                  color: _currentIndex == 2
+                      ? AppColors.bgColor
+                      : AppColors.greyColor,
+                ),
+                label: 'Statistik',
+              ),
               //lineup
               BottomNavigationBarItem(
                 icon: Image.asset(
                   AssetPath.lineup,
                   width: 20,
-                  color: _currentIndex == 2
+                  color: _currentIndex == 3
                       ? AppColors.bgColor
                       : AppColors.greyColor,
                 ),
