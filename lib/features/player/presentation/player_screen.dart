@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lineups/features/dashboard/presentation/home_secreen.dart';
 import 'package:lineups/features/dashboard/presentation/home_tab.dart';
 import 'package:lineups/features/player/data/models/player_model.dart';
 import 'package:lineups/features/player/presentation/add_player_screen.dart';

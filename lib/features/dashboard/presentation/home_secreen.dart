@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:lineups/features/aspek/presentation/aspek_screen.dart';
 import 'package:lineups/features/dashboard/data/carousel_data.dart';
-import 'package:lineups/features/dashboard/presentation/image_viewer.dart';
+import 'package:lineups/features/dashboard/model/schedule_model.dart';
 import 'package:lineups/features/kriteria/presentation/kriteria_screen.dart';
 import 'package:lineups/features/lineup/presentation/lineup_screen.dart';
 import 'package:lineups/features/penilaian/presentation/hasil_penilaian_screen.dart';
-import 'package:lineups/features/penilaian/presentation/penilaian_screen.dart';
 import 'package:lineups/features/player/presentation/player_screen.dart';
 import 'package:lineups/features/statistik/presentation/statistik_screen.dart';
+import 'package:lineups/service/api_service.dart';
 import 'package:lineups/utils/asset_path.dart';
 import 'package:lineups/utils/colors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,10 +24,31 @@ class _HomeScreenState extends State<HomeScreen> {
   late CarouselController carouselController;
   int innerCurrentPage = 0;
 
+  List<ScheduleModel> schedules = [];
+  final ApiService apiService = ApiService();
+
   @override
   void initState() {
     carouselController = CarouselController();
     super.initState();
+    fetchSchedules();
+  }
+
+  Future<void> fetchSchedules() async {
+    try {
+      final fetchedSchedules = await apiService.fetchSchedules();
+      setState(() {
+        schedules = fetchedSchedules;
+      });
+    } catch (e) {
+      setState(() {});
+    }
+  }
+
+  String formatDateTime(DateTime dateTime) {
+    final DateFormat dayFormat = DateFormat('EEEE, dd MMMM yyyy', 'id_ID');
+    final DateFormat timeFormat = DateFormat('HH:mm');
+    return '${dayFormat.format(dateTime)}, ${timeFormat.format(dateTime)}';
   }
 
   @override

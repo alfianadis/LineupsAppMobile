@@ -16,6 +16,7 @@ class EditKriteriaScreen extends StatefulWidget {
 
 class _EditKriteriaScreenState extends State<EditKriteriaScreen> {
   final ApiService apiService = ApiService();
+  // ignore: unused_field
   final _formKey = GlobalKey<FormState>();
 
   String selectedPosisi = '';

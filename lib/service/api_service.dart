@@ -3,13 +3,41 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:lineups/features/aspek/data/models/aspek_model.dart';
+import 'package:lineups/features/dashboard/model/schedule_model.dart';
 import 'package:lineups/features/kriteria/data/models/kriteria_model.dart';
 import 'package:lineups/features/penilaian/data/models/assesment_model.dart';
 import 'package:lineups/features/player/data/models/player_model.dart';
 import 'package:lineups/features/statistik/data/statistik_model.dart';
 
 class ApiService {
-  final String baseUrl = "https://empty-ideas-attack.loca.lt/";
+  final String baseUrl = "https://slimy-jars-give.loca.lt/";
+
+//schedule
+
+  Future<List<ScheduleModel>> fetchSchedules() async {
+    final response = await http.get(Uri.parse('$baseUrl/schedule'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+      return data.map((item) => ScheduleModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load schedules');
+    }
+  }
+
+  Future<ScheduleModel?> addSchedule(ScheduleModel schedule) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/schedule'),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(schedule.toJson()),
+    );
+
+    if (response.statusCode == 201) {
+      return ScheduleModel.fromJson(jsonDecode(response.body));
+    } else {
+      return null;
+    }
+  }
 
   // Player API
   Future<List<PlayerModel>> getPlayers() async {

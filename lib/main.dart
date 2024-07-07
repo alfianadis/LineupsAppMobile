@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lineups/features/dashboard/presentation/home_secreen.dart';
-import 'package:lineups/features/dashboard/presentation/home_tab.dart';
 import 'package:lineups/features/login/presentation/splash_screen.dart';
 
 void main() {

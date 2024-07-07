@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lineups/features/dashboard/presentation/home_secreen.dart';
 import 'package:lineups/features/dashboard/presentation/home_tab.dart';
-import 'package:lineups/utils/colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

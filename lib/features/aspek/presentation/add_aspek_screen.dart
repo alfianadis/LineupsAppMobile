@@ -42,6 +42,7 @@ class _AddAspekkScreenState extends State<AddAspekkScreen> {
 
       try {
         // Memanggil metode untuk menambahkan aspek baru
+        // ignore: unused_local_variable
         AspekModel addedAspek = await _apiService.createAspekModel(newAspek);
 
         // Tampilkan pesan sukses atau navigasi ke layar splash success

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lineups/features/kriteria/data/models/kriteria_model.dart';
-import 'package:lineups/features/penilaian/data/models/assesment_model.dart';
 import 'package:lineups/features/penilaian/presentation/splash_success_spk.dart';
 import 'package:lineups/features/player/data/models/player_model.dart';
 import 'package:lineups/service/api_service.dart';

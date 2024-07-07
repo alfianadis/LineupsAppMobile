@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:lineups/features/aspek/presentation/aspek_screen.dart';
 import 'package:lineups/features/dashboard/presentation/home_secreen.dart';
-import 'package:lineups/features/kriteria/presentation/kriteria_screen.dart';
 import 'package:lineups/features/lineup/presentation/lineup_screen.dart';
-import 'package:lineups/features/penilaian/presentation/penilaian_screen.dart';
 import 'package:lineups/features/player/presentation/player_screen.dart';
 import 'package:lineups/utils/asset_path.dart';
 import 'package:lineups/utils/colors.dart';
@@ -28,10 +24,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   final List<Widget> _children = [
     const HomeScreen(),
     const PlayerScreen(),
-    // const AspekScreen(),
     const LineupScreen(),
-    // const KriteriaScreen(),
-    // const PenilaianScreen()
   ];
 
   @override
