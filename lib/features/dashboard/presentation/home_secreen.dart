@@ -173,8 +173,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
 
-                // _innerBannerSlider(size.height, size.height),
-
                 const SizedBox(height: 20),
                 Row(
                   children: [
@@ -525,105 +523,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 const SizedBox(height: 15),
-                Center(
-                  child: Container(
-                    height: size.height * 0.14,
-                    width: size.width,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 2,
-                          offset:
-                              const Offset(0, 2), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 15, right: 15, top: 10),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                'assets/icons/player.png',
-                                width: 30,
-                                height: 30,
-                              ),
-                              const SizedBox(width: 10),
-                              const Text(
-                                'Latihan',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: size.width,
-                            child: const Divider(thickness: 1),
-                          ),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.calendar_today,
-                                    color: AppColors.greyColor,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '20 Mei 2024',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w200,
-                                        ),
-                                      ),
-                                      Text(
-                                        '16:00',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w200,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.place,
-                                    color: AppColors.chart01,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    'Tifosi Sport Center',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w200,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
+                _buildScheduleList(size),
                 const SizedBox(height: 20),
               ],
             ),
@@ -633,87 +533,102 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Inner Style Indicators Banner Slider
-  // Widget _innerBannerSlider(double height, double width) {
-  //   return Column(
-  //     children: [
-  //       SizedBox(
-  //         height: height * .25,
-  //         width: width,
-  //         child: Stack(
-  //           alignment: Alignment.center,
-  //           children: [
-  //             /// Carouse lSlider
-  //             Positioned.fill(
-  //               child: CarouselSlider(
-  //                 carouselController: innerCarouselController,
-
-  //                 /// It's options
-  //                 options: CarouselOptions(
-  //                   autoPlay: true,
-  //                   enlargeCenterPage: true,
-  //                   enableInfiniteScroll: true,
-  //                   viewportFraction: 0.8,
-  //                   onPageChanged: (index, reason) {
-  //                     setState(() {
-  //                       innerCurrentPage = index;
-  //                     });
-  //                   },
-  //                 ),
-
-  //                 /// Items
-  //                 items: AppData.innerStyleImages.map((imagePath) {
-  //                   return Builder(
-  //                     builder: (BuildContext context) {
-  //                       /// Custom Image Viewer widget
-  //                       return CustomImageViewer.show(
-  //                         context: context,
-  //                         url: imagePath,
-  //                         fit: BoxFit.cover,
-  //                       );
-  //                     },
-  //                   );
-  //                 }).toList(),
-  //               ),
-  //             ),
-
-  //             /// Indicators
-  //             Positioned(
-  //               bottom: height * .02,
-  //               child: Row(
-  //                 children: List.generate(
-  //                   AppData.innerStyleImages.length,
-  //                   (index) {
-  //                     bool isSelected = innerCurrentPage == index;
-  //                     return GestureDetector(
-  //                       onTap: () {
-  //                         innerCarouselController.animateToPage(index);
-  //                       },
-  //                       child: AnimatedContainer(
-  //                         width: isSelected ? 55 : 17,
-  //                         height: 10,
-  //                         margin: EdgeInsets.symmetric(
-  //                             horizontal: isSelected ? 6 : 3),
-  //                         decoration: BoxDecoration(
-  //                           color: isSelected
-  //                               ? Colors.white
-  //                               : Colors.grey.shade200,
-  //                           borderRadius: BorderRadius.circular(
-  //                             40,
-  //                           ),
-  //                         ),
-  //                         duration: const Duration(milliseconds: 300),
-  //                         curve: Curves.ease,
-  //                       ),
-  //                     );
-  //                   },
-  //                 ),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget _buildScheduleList(Size size) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: schedules.length,
+      separatorBuilder: (BuildContext context, int index) =>
+          SizedBox(height: 20),
+      itemBuilder: (BuildContext context, int index) {
+        return Center(
+          child: Container(
+            height: size.height * 0.16,
+            width: size.width,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 1,
+                  blurRadius: 2,
+                  offset: const Offset(0, 2), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/icons/player.png',
+                        width: 30,
+                        height: 30,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        '${schedules[index].activityName}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    width: size.width,
+                    child: const Divider(thickness: 1),
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_today,
+                            color: AppColors.greyColor,
+                          ),
+                          SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                formatDateTime(schedules[index].activityTime),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w200,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.place,
+                            color: AppColors.chart01,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            '${schedules[index].activityLocation}',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w200,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

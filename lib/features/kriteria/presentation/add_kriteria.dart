@@ -76,9 +76,19 @@ class _AddKriteriaScreenState extends State<AddKriteriaScreen> {
       }
     } else {
       // Jika ada field yang belum terisi, tampilkan pesan untuk mengisi semua field
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Semua field harus diisi!'),
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Peringatan'),
+          content: Text('Harap lengkapi semua informasi yang diperlukan.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
         ),
       );
     }

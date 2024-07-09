@@ -1022,7 +1022,48 @@ class _AddStatistikScreenState extends State<AddStatistikScreen> {
     }
   }
 
+  // Add this method to show an alert dialog
+  void _showAlertDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Peringatan'),
+        content: Text('Harap lengkapi semua informasi yang diperlukan.'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> submitStatistik() async {
+    // Check if all fields are filled
+    if (selectedPosisi.isEmpty ||
+        selectedPemain.isEmpty ||
+        _jumlahGolController.text.isEmpty ||
+        _shootingController.text.isEmpty ||
+        _accelerationController.text.isEmpty ||
+        _crossingController.text.isEmpty ||
+        _ballControlController.text.isEmpty ||
+        _bodyBalanceController.text.isEmpty ||
+        _enduranceController.text.isEmpty ||
+        _intersepController.text.isEmpty ||
+        _visionController.text.isEmpty ||
+        _passingController.text.isEmpty ||
+        _throughPassController.text.isEmpty ||
+        _saveController.text.isEmpty ||
+        _refleksController.text.isEmpty ||
+        _jumpController.text.isEmpty ||
+        _throwingController.text.isEmpty) {
+      _showAlertDialog(context, "Please fill in all the fields.");
+      return;
+    }
+
     final data = {
       "posisi": selectedPosisi,
       "player_name": selectedPemain,
@@ -1067,7 +1108,7 @@ class _AddStatistikScreenState extends State<AddStatistikScreen> {
         );
       } else {
         // Handle error
-        print('Gagal mengirim statistik: ${response.statusCode}');
+        print('Failed to submit statistics: ${response.statusCode}');
       }
     } catch (e) {
       print('Error: $e');

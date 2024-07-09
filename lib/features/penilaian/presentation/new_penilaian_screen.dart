@@ -892,6 +892,26 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
   }
 
   Future<void> submitAssessment() async {
+    if (selectedPosisi.isEmpty) {
+      _showAlertDialog("Posisi harus dipilih.");
+      return;
+    }
+    if (selectedPemain.isEmpty) {
+      _showAlertDialog("Nama pemain harus dipilih.");
+      return;
+    }
+    if (selectedAspek.isEmpty) {
+      _showAlertDialog("Aspek harus dipilih.");
+      return;
+    }
+    for (var criteria in _filteredCriteria) {
+      if (!criteriaValues.containsKey(criteria.criteria) ||
+          criteriaValues[criteria.criteria]!['value']!.isEmpty) {
+        _showAlertDialog("Semua nilai kriteria harus diisi.");
+        return;
+      }
+    }
+
     List<Map<String, dynamic>> aspectList = [
       {
         "target": {
@@ -946,5 +966,25 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
       print('Error: $e');
       // Show error message
     }
+  }
+
+  void _showAlertDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Peringatan"),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -10,7 +10,7 @@ import 'package:lineups/features/player/data/models/player_model.dart';
 import 'package:lineups/features/statistik/data/statistik_model.dart';
 
 class ApiService {
-  final String baseUrl = "https://slimy-jars-give.loca.lt/";
+  final String baseUrl = "https://shiny-chairs-beg.loca.lt/";
 
 //schedule
 
@@ -18,8 +18,8 @@ class ApiService {
     final response = await http.get(Uri.parse('$baseUrl/schedule'));
 
     if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((item) => ScheduleModel.fromJson(item)).toList();
+      final List<dynamic> jsonResponse = json.decode(response.body);
+      return jsonResponse.map((json) => ScheduleModel.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load schedules');
     }

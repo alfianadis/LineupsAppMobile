@@ -210,65 +210,71 @@ class _ResultSPKScreenState extends State<ResultSPKScreen> {
                     int index = entry.key;
                     AssessmentModel player = entry.value;
                     double finalScore = calculateScore(player);
-                    return Row(
-                      children: [
-                        Container(
-                          height: 30,
-                          width: 5,
-                          decoration: BoxDecoration(
-                            color: Colors.amber,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        Container(
-                          height: 30,
-                          width: size.width * 0.72,
-                          decoration: BoxDecoration(
-                            color: AppColors.greyTreeColor,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  player.playerName,
-                                  style: const TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black),
-                                ),
-                                Text(
-                                  finalScore.toStringAsFixed(1),
-                                  style: const TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black),
-                                ),
-                              ],
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 30,
+                            width: 5,
+                            decoration: BoxDecoration(
+                              color: Colors.amber,
+                              borderRadius: BorderRadius.circular(5),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 15),
-                        Container(
-                          height: 30,
-                          width: 30,
-                          decoration: BoxDecoration(
-                            color: AppColors.greyTreeColor,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Center(
-                            child: Text(
-                              (index + 1).toString(),
-                              style: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black),
+                          Container(
+                            height: 30,
+                            width: size.width * 0.72,
+                            decoration: BoxDecoration(
+                              color: AppColors.greyTreeColor,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    player.playerName,
+                                    style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black),
+                                  ),
+                                  Text(
+                                    finalScore.toStringAsFixed(1),
+                                    style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 15),
+                          Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              color: AppColors.greyTreeColor,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Center(
+                              child: Text(
+                                (index + 1).toString(),
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                        ],
+                      ),
                     );
                   }).toList()
                 ],

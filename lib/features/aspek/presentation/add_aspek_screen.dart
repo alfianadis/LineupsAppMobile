@@ -63,8 +63,20 @@ class _AddAspekkScreenState extends State<AddAspekkScreen> {
       }
     } else {
       // Tampilkan pesan jika input tidak valid
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Nama aspek dan persentase harus diisi')),
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Peringatan'),
+          content: Text('Harap lengkapi semua informasi yang diperlukan.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
       );
     }
   }
