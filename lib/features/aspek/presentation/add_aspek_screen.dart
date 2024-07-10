@@ -15,7 +15,6 @@ class AddAspekkScreen extends StatefulWidget {
 
 class _AddAspekkScreenState extends State<AddAspekkScreen> {
   TextEditingController _nameController = TextEditingController();
-  TextEditingController _percentageController = TextEditingController();
   TextEditingController _coreFactorController = TextEditingController();
   TextEditingController _secondaryFactorController = TextEditingController();
 
@@ -23,16 +22,14 @@ class _AddAspekkScreenState extends State<AddAspekkScreen> {
 
   void _addAspek() async {
     String name = _nameController.text.trim();
-    int percentage = int.tryParse(_percentageController.text.trim()) ?? 0;
     int coreFactor = int.tryParse(_coreFactorController.text.trim()) ?? 0;
     int secondaryFactor =
         int.tryParse(_secondaryFactorController.text.trim()) ?? 0;
 
-    if (name.isNotEmpty && percentage > 0) {
+    if (name.isNotEmpty) {
       AspekModel newAspek = AspekModel(
         id: '', // ID akan diisi oleh server, jadi biarkan kosong
         assessmentAspect: name,
-        percentage: percentage,
         coreFactor: coreFactor,
         secondaryFactor: secondaryFactor,
         createdAt: DateTime.now(),
@@ -140,42 +137,6 @@ class _AddAspekkScreenState extends State<AddAspekkScreen> {
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: "Masukkan Aspek*",
-                      hintStyle: TextStyle(
-                          fontWeight: FontWeight.w200,
-                          fontSize: 12,
-                          color: AppColors.greySixColor),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Persentase',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                height: size.height * 0.09,
-                width: size.width,
-                decoration: BoxDecoration(
-                  color: AppColors.greenSecobdColor,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 25, top: 8),
-                  child: TextFormField(
-                    controller: _percentageController,
-                    keyboardType: TextInputType.number,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "0",
                       hintStyle: TextStyle(
                           fontWeight: FontWeight.w200,
                           fontSize: 12,

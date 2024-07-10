@@ -7,11 +7,15 @@ import 'package:lineups/features/lineup/presentation/lineup_screen.dart';
 import 'package:lineups/features/penilaian/presentation/hasil_penilaian_screen.dart';
 import 'package:lineups/features/player/presentation/player_screen.dart';
 import 'package:lineups/features/statistik/presentation/statistik_screen.dart';
+import 'package:lineups/features/login/presentation/login_screen.dart';
 import 'package:lineups/service/api_service.dart';
 import 'package:lineups/utils/asset_path.dart';
 import 'package:lineups/utils/colors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:lineups/config/user_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -51,9 +55,49 @@ class _HomeScreenState extends State<HomeScreen> {
     return '${dayFormat.format(dateTime)}, ${timeFormat.format(dateTime)}';
   }
 
+  Future<void> _logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (route) => false,
+    );
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Apakah Anda yakin ingin logout?'),
+          actions: [
+            TextButton(
+              child: const Text('Batal'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Logout'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _logout();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
+
     return Scaffold(
       extendBody: true,
       backgroundColor: AppColors.bgColor,
@@ -65,24 +109,37 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-                const Text(
-                  'Hello,',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const Text(
-                  'Alfian Adi Septianto',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Hello,',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          user!.fullName,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.logout),
+                      onPressed: _showLogoutDialog,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
 
-                //iklan slider
-
+                // Iklan slider
                 Column(
                   children: [
                     SizedBox(
@@ -114,10 +171,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return Builder(
                                   builder: (BuildContext context) {
                                     return Container(
-                                      // decoration: BoxDecoration(
-                                      //   color: Theme.of(context)
-                                      //       .dialogBackgroundColor,
-                                      // ),
                                       margin: const EdgeInsets.symmetric(
                                           horizontal: 1.0),
                                       child: ClipRRect(
@@ -172,7 +225,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 20),
                 Row(
                   children: [
@@ -571,7 +623,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(width: 10),
                       Text(
                         '${schedules[index].activityName}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
@@ -590,13 +642,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             Icons.calendar_today,
                             color: AppColors.greyColor,
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 formatDateTime(schedules[index].activityTime),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w200,
                                 ),
@@ -611,10 +663,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             Icons.place,
                             color: AppColors.chart01,
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Text(
                             '${schedules[index].activityLocation}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w200,
                             ),

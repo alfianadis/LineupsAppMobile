@@ -1,16 +1,85 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:lineups/config/user_provider.dart';
 import 'package:lineups/features/aspek/data/models/aspek_model.dart';
 import 'package:lineups/features/dashboard/model/schedule_model.dart';
 import 'package:lineups/features/kriteria/data/models/kriteria_model.dart';
+import 'package:lineups/features/login/data/models/auth_response.dart';
 import 'package:lineups/features/penilaian/data/models/assesment_model.dart';
 import 'package:lineups/features/player/data/models/player_model.dart';
 import 'package:lineups/features/statistik/data/statistik_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class ApiService {
-  final String baseUrl = "https://shiny-chairs-beg.loca.lt/";
+  final String baseUrl = "https://young-carrots-see.loca.lt/";
+
+  Future<AuthResponse> login(
+      BuildContext context, String username, String password) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'username': username,
+        'password': password,
+      }),
+    );
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final authResponse = jsonDecode(response.body);
+      final accessToken = authResponse['access_token'];
+      final userJson = authResponse['user'];
+
+      // Membuat objek User dari JSON
+      final user = User.fromJson(userJson);
+
+      // Simpan user di SharedPreferences untuk menjaga state
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('access_token', accessToken);
+      await prefs.setString('user', jsonEncode(user.toJson()));
+
+      // Update UserProvider
+      Provider.of<UserProvider>(context, listen: false).setUser(user);
+
+      return AuthResponse(
+        accessToken: accessToken,
+        user: user,
+      );
+    } else if (response.statusCode == 401) {
+      final errorResponse = jsonDecode(response.body);
+      throw Exception('Failed to login: ${errorResponse['message']}');
+    } else {
+      throw Exception('Failed to login: ${response.reasonPhrase}');
+    }
+  }
+
+  Future<void> register(
+      String username, String password, String fullName, String role) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/register'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'username': username,
+        'password': password,
+        'fullName': fullName,
+        'role': role,
+      }),
+    );
+
+    if (response.statusCode != 201) {
+      final errorResponse = jsonDecode(response.body);
+      throw Exception('Failed to register: ${errorResponse['message']}');
+    }
+  }
 
 //schedule
 
@@ -59,37 +128,22 @@ class ApiService {
     }
   }
 
-  Future<bool> addPlayer(String name, String position, int jerseyNumber) async {
-    try {
-      var request = http.MultipartRequest('POST', Uri.parse(baseUrl));
-      request.fields['name'] = name;
-      request.fields['position'] = position;
-      request.fields['jersey_number'] = jerseyNumber.toString();
+  Future<bool> addPlayer(
+      String name, String position, String jerseyNumber) async {
+    final url = Uri.parse('$baseUrl/player');
 
-      var streamedResponse =
-          await request.send().timeout(const Duration(seconds: 10));
-      var response = await http.Response.fromStream(streamedResponse);
+    var request = http.MultipartRequest('POST', url)
+      ..fields['name'] = name
+      ..fields['position'] = position
+      ..fields['jersey_number'] = jerseyNumber;
 
-      if (response.statusCode == 201) {
-        return true;
-      } else {
-        print('Failed to add player: ${response.statusCode}');
-        return false;
-      }
-    } on SocketException {
-      print('No Internet connection');
-      return false;
-    } on HttpException {
-      print("Couldn't find the post");
-      return false;
-    } on FormatException {
-      print("Bad response format");
-      return false;
-    } on TimeoutException {
-      print("Request timed out");
-      return false;
-    } catch (e) {
-      print('Error adding player: $e');
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString();
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      print('Failed to add player: ${response.statusCode}');
+      print('Response body: $responseBody');
       return false;
     }
   }

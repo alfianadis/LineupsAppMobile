@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lineups/features/dashboard/presentation/home_secreen.dart';
+import 'package:lineups/config/user_provider.dart';
+import 'package:lineups/features/dashboard/presentation/home_tab.dart';
+import 'package:lineups/features/login/data/models/auth_response.dart';
 import 'package:lineups/features/register/presentation/register_screen.dart';
+import 'package:lineups/service/api_service.dart';
 import 'package:lineups/utils/colors.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,187 +16,161 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormBuilderState>();
-  bool obscureText = false;
-  bool isLoading = false;
-  bool isActive = false;
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  String? username;
-  String? password;
+  bool obscureText = true;
+  bool isLoading = false;
+
+  final ApiService apiService = ApiService();
+
+  Future<void> _login() async {
+    try {
+      AuthResponse response = await apiService.login(
+        context,
+        _usernameController.text,
+        _passwordController.text,
+      );
+
+      // Simpan token atau lakukan tindakan lain dengan response.accessToken
+      print('Login successful: ${response.accessToken}');
+
+      // Update UserProvider
+      Provider.of<UserProvider>(context, listen: false).setUser(response.user);
+
+      // Menampilkan dialog sukses dan navigasi ke MainScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeTab(),
+        ),
+      );
+    } catch (e) {
+      // Menampilkan dialog gagal
+      print('Login failed with error: $e');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Login Failed'),
+            content: Text(e.toString()),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: AppColors.bgColor,
+      backgroundColor: AppColors.white,
       body: SafeArea(
-          child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-            const Text('Selamat Datang'),
-            const SizedBox(height: 40),
-            FormBuilder(
-              key: _formKey,
-              child: Container(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Column(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25, top: 40),
+            child: Column(
+              children: [
+                const Text(
+                  'Selamat Datang',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black),
+                ),
+                const SizedBox(height: 20),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    FormBuilderTextField(
-                      cursorColor: AppColors.neutralColor,
-                      // ignore: unnecessary_null_in_if_null_operators
-                      initialValue: username ?? null,
-                      onChanged: (val) {
-                        setState(() {
-                          username = val;
-                        });
-                      },
-                      name: 'username',
-                      style: const TextStyle(
+                    const Text(
+                      'Username',
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 13,
+                        fontSize: 14,
                       ),
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 23.0, horizontal: 20.0),
-                        labelStyle: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                        label: const Text(
-                          'Enter Username',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w200,
-                              fontSize: 10,
-                              color: AppColors.greySixColor),
-                        ),
-                        filled: true,
-                        hintStyle: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: AppColors.neutralColor,
-                            width: 2,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: AppColors.greenSecobdColor,
-                            width: 2,
-                          ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: AppColors.primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: AppColors.primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                        fillColor: AppColors.greenSecobdColor,
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      height: size.height * 0.09,
+                      width: size.width,
+                      decoration: BoxDecoration(
+                        color: AppColors.greenSecobdColor,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                      ]),
-                      keyboardType: TextInputType.number,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 25, top: 8),
+                        child: TextFormField(
+                          controller: _usernameController,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Masukkan Username Anda*",
+                            hintStyle: TextStyle(
+                                fontWeight: FontWeight.w200,
+                                fontSize: 12,
+                                color: AppColors.greySixColor),
+                          ),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 20),
-                    FormBuilderTextField(
-                      // ignore: unnecessary_null_in_if_null_operators
-                      cursorColor: AppColors.neutralColor,
-                      initialValue: password,
-                      onChanged: (val) {
-                        setState(() {
-                          password = val;
-                        });
-                      },
-                      obscureText: obscureText ? false : true,
-                      name: 'password',
-                      style: const TextStyle(
+                    const Text(
+                      'Password',
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 13,
+                        fontSize: 14,
                       ),
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 23.0, horizontal: 20.0),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() => obscureText = !obscureText);
-                          },
-                          icon: obscureText
-                              ? SvgPicture.asset(
-                                  "assets/icons/eye.svg",
-                                  // ignore: deprecated_member_use
-                                  color: AppColors.neutralColor,
-                                )
-                              : SvgPicture.asset(
-                                  "assets/icons/eye-slash.svg",
-                                  // ignore: deprecated_member_use
-                                  color: AppColors.neutralColor,
-                                ),
-                        ),
-                        labelStyle: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                        label: const Text(
-                          'Enter Password',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w200,
-                              fontSize: 10,
-                              color: AppColors.greySixColor),
-                        ),
-                        filled: true,
-                        hintStyle: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: AppColors.neutralColor,
-                            width: 2,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: AppColors.greenSecobdColor,
-                            width: 2,
-                          ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: AppColors.primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: AppColors.primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                        fillColor: AppColors.greenSecobdColor,
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      height: size.height * 0.09,
+                      width: size.width,
+                      decoration: BoxDecoration(
+                        color: AppColors.greenSecobdColor,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                        FormBuilderValidators.minLength(4, errorText: 'lorep'),
-                      ]),
-                      keyboardType: TextInputType.visiblePassword,
-                      textInputAction: TextInputAction.done,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 25, top: 8),
+                        child: TextFormField(
+                          controller: _passwordController,
+                          obscureText: obscureText,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Masukkan Password Anda*",
+                            hintStyle: TextStyle(
+                                fontWeight: FontWeight.w200,
+                                fontSize: 12,
+                                color: AppColors.greySixColor),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                obscureText
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  obscureText = !obscureText;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 30),
                     Center(
@@ -208,22 +184,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: InkWell(
                           highlightColor: Colors.transparent,
                           splashColor: Colors.transparent,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const HomeScreen(),
-                              ),
-                            );
-                          },
-                          child: const Center(
-                            child: Text(
-                              'Sign In',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 13,
-                                  color: AppColors.whiteTextColor),
-                            ),
+                          onTap: isLoading ? null : _login,
+                          child: Center(
+                            child: isLoading
+                                ? CircularProgressIndicator(
+                                    color: AppColors.whiteTextColor,
+                                  )
+                                : const Text(
+                                    'Masuk',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 13,
+                                        color: AppColors.whiteTextColor),
+                                  ),
                           ),
                         ),
                       ),
@@ -252,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           child: const Center(
                             child: Text(
-                              'Register',
+                              'Daftar',
                               style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 13,
@@ -264,11 +237,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
-      )),
+      ),
     );
   }
 }

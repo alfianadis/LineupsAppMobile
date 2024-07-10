@@ -68,65 +68,65 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 30),
-              const Text(
-                'Foto Pemain',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 10),
-              InkWell(
-                highlightColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                onTap: _pickImage,
-                child: SizedBox(
-                  height: size.height * 0.3,
-                  width: size.width * 0.4,
-                  child: Container(
-                    color: Colors.white,
-                    child: DottedBorder(
-                      padding: const EdgeInsets.all(8),
-                      radius: const Radius.circular(8),
-                      borderType: BorderType.RRect,
-                      strokeWidth: 0.5,
-                      color: const Color(0xffC4C4C4),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: _imageFile == null
-                                  ? Container(
-                                      width: size.width * 0.1,
-                                      height: size.width * 0.1,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.greenColor,
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: const Center(
-                                        child: Icon(
-                                          Icons.add,
-                                          color: AppColors.bgColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Image.file(
-                                      _imageFile!,
-                                      height: size.height * 0.3,
-                                      width: size.width * 0.4,
-                                      fit: BoxFit.cover,
-                                    ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
+              // const Text(
+              //   'Foto Pemain',
+              //   style: TextStyle(
+              //     fontWeight: FontWeight.bold,
+              //     fontSize: 14,
+              //   ),
+              // ),
+              // const SizedBox(height: 10),
+              // InkWell(
+              //   highlightColor: Colors.transparent,
+              //   splashColor: Colors.transparent,
+              //   onTap: _pickImage,
+              //   child: SizedBox(
+              //     height: size.height * 0.3,
+              //     width: size.width * 0.4,
+              //     child: Container(
+              //       color: Colors.white,
+              //       child: DottedBorder(
+              //         padding: const EdgeInsets.all(8),
+              //         radius: const Radius.circular(8),
+              //         borderType: BorderType.RRect,
+              //         strokeWidth: 0.5,
+              //         color: const Color(0xffC4C4C4),
+              //         child: Column(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             Center(
+              //               child: ClipRRect(
+              //                 borderRadius: BorderRadius.circular(8),
+              //                 child: _imageFile == null
+              //                     ? Container(
+              //                         width: size.width * 0.1,
+              //                         height: size.width * 0.1,
+              //                         decoration: BoxDecoration(
+              //                           color: AppColors.greenColor,
+              //                           borderRadius: BorderRadius.circular(30),
+              //                         ),
+              //                         child: const Center(
+              //                           child: Icon(
+              //                             Icons.add,
+              //                             color: AppColors.bgColor,
+              //                           ),
+              //                         ),
+              //                       )
+              //                     : Image.file(
+              //                         _imageFile!,
+              //                         height: size.height * 0.3,
+              //                         width: size.width * 0.4,
+              //                         fit: BoxFit.cover,
+              //                       ),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(height: 10),
               const Text(
                 'Nama Pemain',
                 style: TextStyle(
@@ -330,7 +330,7 @@ class _AddPlayerScreenState extends State<AddPlayerScreen> {
         .addPlayer(
       _namePlayerController.text,
       selectedPosisi,
-      int.parse(_jerseyNumberController.text),
+      _jerseyNumberController.text, // convert to string here
     )
         .then((success) {
       if (success) {

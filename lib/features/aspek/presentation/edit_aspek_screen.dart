@@ -14,7 +14,6 @@ class EditAspekScreen extends StatefulWidget {
 class _EditAspekScreenState extends State<EditAspekScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _assessmentAspectController;
-  late TextEditingController _percentageController;
   late TextEditingController _coreFactorController;
   late TextEditingController _secondaryFactorController;
 
@@ -23,8 +22,6 @@ class _EditAspekScreenState extends State<EditAspekScreen> {
     super.initState();
     _assessmentAspectController =
         TextEditingController(text: widget.aspek.assessmentAspect);
-    _percentageController =
-        TextEditingController(text: widget.aspek.percentage.toString());
     _coreFactorController =
         TextEditingController(text: widget.aspek.coreFactor.toString());
     _secondaryFactorController =
@@ -34,7 +31,6 @@ class _EditAspekScreenState extends State<EditAspekScreen> {
   @override
   void dispose() {
     _assessmentAspectController.dispose();
-    _percentageController.dispose();
     _coreFactorController.dispose();
     _secondaryFactorController.dispose();
     super.dispose();
@@ -45,7 +41,6 @@ class _EditAspekScreenState extends State<EditAspekScreen> {
       AspekModel updatedAspek = AspekModel(
         id: widget.aspek.id,
         assessmentAspect: _assessmentAspectController.text,
-        percentage: int.parse(_percentageController.text),
         coreFactor: int.parse(_coreFactorController.text),
         secondaryFactor: int.parse(_secondaryFactorController.text),
         createdAt: widget.aspek.createdAt, // Gunakan waktu asli untuk createdAt
@@ -80,17 +75,6 @@ class _EditAspekScreenState extends State<EditAspekScreen> {
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter an assessment aspect';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _percentageController,
-              decoration: const InputDecoration(labelText: 'Percentage'),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a percentage';
                 }
                 return null;
               },

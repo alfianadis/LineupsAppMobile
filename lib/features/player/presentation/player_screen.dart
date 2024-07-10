@@ -107,10 +107,20 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                       left: 15, right: 15),
                                   child: Row(
                                     children: [
-                                      CircleAvatar(
-                                        radius: 35,
-                                        backgroundImage:
-                                            NetworkImage(player.imgUrl),
+                                      Container(
+                                        width: 70,
+                                        height: 70,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: AssetImage(
+                                              player.position == 'Kiper'
+                                                  ? 'assets/images/player_jersey.png'
+                                                  : 'assets/images/kiper_jersey.png',
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                       const SizedBox(width: 15),
                                       Expanded(
