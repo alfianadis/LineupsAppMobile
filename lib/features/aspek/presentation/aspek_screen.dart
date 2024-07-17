@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lineups/config/user_provider.dart';
 import 'package:lineups/features/aspek/data/models/aspek_model.dart';
 import 'package:lineups/features/aspek/presentation/add_aspek_screen.dart';
 import 'package:lineups/features/aspek/presentation/edit_aspek_screen.dart';
@@ -6,6 +7,7 @@ import 'package:lineups/features/dashboard/presentation/home_tab.dart';
 import 'package:lineups/service/api_service.dart';
 import 'package:lineups/utils/colors.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:provider/provider.dart';
 
 class AspekScreen extends StatefulWidget {
   const AspekScreen({super.key});
@@ -57,6 +59,9 @@ class _AspekScreenState extends State<AspekScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
+
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -94,28 +99,32 @@ class _AspekScreenState extends State<AspekScreen> {
                 const EdgeInsets.only(top: 20, left: 25, right: 25, bottom: 30),
             child: Column(
               children: [
-                isLoading ? _buildShimmerList(size) : _buildAspekList(size),
+                isLoading
+                    ? _buildShimmerList(size)
+                    : _buildAspekList(size, user!.role),
               ],
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const AddAspekkScreen(),
-            ),
-          );
-        },
-        backgroundColor: AppColors.yellow,
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+      floatingActionButton: user!.role != 'Pemain'
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const AddAspekkScreen(),
+                  ),
+                );
+              },
+              backgroundColor: AppColors.yellow,
+              shape: const CircleBorder(),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
@@ -127,7 +136,7 @@ class _AspekScreenState extends State<AspekScreen> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: 5, // You can adjust the item count for shimmer effect
       separatorBuilder: (BuildContext context, int index) =>
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
       itemBuilder: (BuildContext context, int index) {
         return Shimmer.fromColors(
           baseColor: Colors.grey[300]!,
@@ -146,13 +155,13 @@ class _AspekScreenState extends State<AspekScreen> {
   }
 
   // Fungsi untuk membangun list aspek
-  Widget _buildAspekList(Size size) {
+  Widget _buildAspekList(Size size, String role) {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: aspeks.length,
       separatorBuilder: (BuildContext context, int index) =>
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
       itemBuilder: (BuildContext context, int index) {
         return Center(
           child: Container(
@@ -238,55 +247,56 @@ class _AspekScreenState extends State<AspekScreen> {
                   const SizedBox(height: 5),
                   const Divider(thickness: 1),
                   const SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          _editAspek(aspeks[index]);
-                        },
-                        child: Container(
-                          height: size.height * 0.04,
-                          width: size.height * 0.11,
-                          decoration: BoxDecoration(
-                            color: AppColors.greenColor,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.edit_square,
-                                color: AppColors.white,
-                              ),
-                              SizedBox(width: 5),
-                              Text(
-                                'Edit',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
+                  if (role != 'Pemain')
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            _editAspek(aspeks[index]);
+                          },
+                          child: Container(
+                            height: size.height * 0.04,
+                            width: size.height * 0.11,
+                            decoration: BoxDecoration(
+                              color: AppColors.greenColor,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.edit_square,
                                   color: AppColors.white,
                                 ),
-                              ),
-                            ],
+                                SizedBox(width: 5),
+                                Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _showDeleteConfirmationDialog(aspeks[index].id);
-                        },
-                        child: const Text(
-                          'Delete',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.redColorDasboard,
+                        InkWell(
+                          onTap: () {
+                            _showDeleteConfirmationDialog(aspeks[index].id);
+                          },
+                          child: const Text(
+                            'Delete',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.redColorDasboard,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                 ],
               ),
             ),

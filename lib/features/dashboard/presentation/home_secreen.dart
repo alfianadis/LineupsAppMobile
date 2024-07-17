@@ -575,6 +575,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 const SizedBox(height: 15),
+                if (schedules.isEmpty)
+                  Center(child: const Text('Tidak ada jadwal')),
                 _buildScheduleList(size),
                 const SizedBox(height: 20),
               ],

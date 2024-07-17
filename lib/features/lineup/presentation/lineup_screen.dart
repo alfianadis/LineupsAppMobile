@@ -56,14 +56,14 @@ class _LineupScreenState extends State<LineupScreen> {
       Player(
         image: 'assets/images/player_jersey.png',
         top: 0.05,
-        left: 0.31,
+        left: 0.33,
         name: kiperPlayers.isNotEmpty ? kiperPlayers[0].playerName : '',
         posisi: kiperPlayers.isNotEmpty ? kiperPlayers[0].posisi : '',
       ),
       Player(
         image: 'assets/images/kiper_jersey.png',
         top: 0.28,
-        left: 0.31,
+        left: 0.30,
         name: anchorPlayers.isNotEmpty ? anchorPlayers[0].playerName : '',
         posisi: anchorPlayers.isNotEmpty ? anchorPlayers[0].posisi : '',
       ),
@@ -77,14 +77,14 @@ class _LineupScreenState extends State<LineupScreen> {
       Player(
         image: 'assets/images/kiper_jersey.png',
         top: 0.45,
-        left: 0.15,
+        left: 0.1,
         name: flankPlayers.length > 1 ? flankPlayers[1].playerName : '',
         posisi: flankPlayers.length > 1 ? flankPlayers[1].posisi : '',
       ),
       Player(
         image: 'assets/images/kiper_jersey.png',
         top: 0.6,
-        left: 0.25,
+        left: 0.33,
         name: pivotPlayers.isNotEmpty ? pivotPlayers[0].playerName : '',
         posisi: pivotPlayers.isNotEmpty ? pivotPlayers[0].posisi : '',
       ),

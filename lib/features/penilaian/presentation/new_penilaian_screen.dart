@@ -625,6 +625,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                       const SizedBox(height: 30),
                       ListView.builder(
                         shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
                         itemCount: _players.length,
                         itemBuilder: (BuildContext context, int index) {
                           return InkWell(

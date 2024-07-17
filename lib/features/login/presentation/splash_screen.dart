@@ -22,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> checkLoginStatus() async {
+    await Future.delayed(Duration(seconds: 5)); // Menambahkan delay 5 detik
     final prefs = await SharedPreferences.getInstance();
     final userJson = prefs.getString('user');
     if (userJson != null) {

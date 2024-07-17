@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lineups/config/user_provider.dart';
 import 'package:lineups/features/dashboard/presentation/home_tab.dart';
 import 'package:lineups/features/kriteria/data/models/kriteria_model.dart';
 import 'package:lineups/features/kriteria/presentation/add_kriteria.dart';
@@ -6,6 +7,7 @@ import 'package:lineups/features/kriteria/presentation/edit_kriteria.dart';
 import 'package:lineups/service/api_service.dart';
 import 'package:lineups/utils/colors.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:provider/provider.dart';
 
 class KriteriaScreen extends StatefulWidget {
   const KriteriaScreen({super.key});
@@ -44,6 +46,8 @@ class _KriteriaScreenState extends State<KriteriaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -84,29 +88,31 @@ class _KriteriaScreenState extends State<KriteriaScreen> {
                 children: [
                   isLoading
                       ? _buildShimmerList(size)
-                      : _buildKriteriaList(size),
+                      : _buildKriteriaList(size, user!.role),
                 ],
               ),
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const AddKriteriaScreen(),
-            ),
-          );
-        },
-        backgroundColor: AppColors.yellow,
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+      floatingActionButton: user!.role != 'Pemain'
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const AddKriteriaScreen(),
+                  ),
+                );
+              },
+              backgroundColor: AppColors.yellow,
+              shape: const CircleBorder(),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
@@ -137,7 +143,7 @@ class _KriteriaScreenState extends State<KriteriaScreen> {
   }
 
   // Fungsi untuk membangun list kriteria
-  Widget _buildKriteriaList(Size size) {
+  Widget _buildKriteriaList(Size size, String role) {
     return ListView.separated(
       shrinkWrap: true,
       physics:
@@ -246,52 +252,53 @@ class _KriteriaScreenState extends State<KriteriaScreen> {
                     child: const Divider(thickness: 1),
                   ),
                   const SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          _showEditKriteriaScreen(kriteria);
-                        },
-                        child: Container(
-                          height: size.height * 0.04,
-                          width: size.height * 0.11,
-                          decoration: BoxDecoration(
-                              color: AppColors.greenColor,
-                              borderRadius: BorderRadius.circular(16)),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.edit_square,
-                                color: AppColors.white,
-                              ),
-                              SizedBox(width: 5),
-                              Text(
-                                'Edit',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.white),
-                              ),
-                            ],
+                  if (role != 'Pemain')
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            _showEditKriteriaScreen(kriteria);
+                          },
+                          child: Container(
+                            height: size.height * 0.04,
+                            width: size.height * 0.11,
+                            decoration: BoxDecoration(
+                                color: AppColors.greenColor,
+                                borderRadius: BorderRadius.circular(16)),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.edit_square,
+                                  color: AppColors.white,
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.white),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _showDeleteConfirmationDialog(criteria[index].id);
-                        },
-                        child: const Text(
-                          'Delete',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.redColorDasboard),
+                        InkWell(
+                          onTap: () {
+                            _showDeleteConfirmationDialog(criteria[index].id);
+                          },
+                          child: const Text(
+                            'Delete',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.redColorDasboard),
+                          ),
                         ),
-                      ),
-                    ],
-                  )
+                      ],
+                    )
                 ],
               ),
             ),

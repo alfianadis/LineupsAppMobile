@@ -14,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 class ApiService {
-  final String baseUrl = "https://young-carrots-see.loca.lt/";
+  final String baseUrl = "https://honest-mirrors-happen.loca.lt/";
 
   Future<AuthResponse> login(
       BuildContext context, String username, String password) async {

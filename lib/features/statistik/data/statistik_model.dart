@@ -149,22 +149,30 @@ class Taktikal {
   int vision;
   int passing;
   int throughPass;
+  int positioning;
+  int wallPass;
 
   Taktikal({
     required this.vision,
     required this.passing,
     required this.throughPass,
+    required this.positioning,
+    required this.wallPass,
   });
 
   factory Taktikal.fromJson(Map<String, dynamic> json) => Taktikal(
         vision: json["Vision"],
         passing: json["Passing"],
         throughPass: json["Through_Pass"],
+        positioning: json["Positioning"],
+        wallPass: json["Wall_Pass"],
       );
 
   Map<String, dynamic> toJson() => {
         "Vision": vision,
         "Passing": passing,
         "Through_Pass": throughPass,
+        "Positioning": positioning,
+        "Wall_Pass": wallPass,
       };
 }

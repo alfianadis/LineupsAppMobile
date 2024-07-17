@@ -38,6 +38,8 @@ class _AddStatistikScreenState extends State<AddStatistikScreen> {
   TextEditingController _refleksController = TextEditingController();
   TextEditingController _jumpController = TextEditingController();
   TextEditingController _throwingController = TextEditingController();
+  TextEditingController _positioningController = TextEditingController();
+  TextEditingController _wallPassController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -732,11 +734,99 @@ class _AddStatistikScreenState extends State<AddStatistikScreen> {
                   ],
                 ),
                 const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Through Pass',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          height: size.height * 0.09,
+                          width: size.width * 0.4,
+                          decoration: BoxDecoration(
+                            color: AppColors.greenSecobdColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 25, top: 8),
+                            child: TextFormField(
+                              controller: _throughPassController,
+                              onChanged: (value) {},
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "0",
+                                hintStyle: TextStyle(
+                                    fontWeight: FontWeight.w200,
+                                    fontSize: 12,
+                                    color: AppColors.greySixColor),
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Positioning',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          height: size.height * 0.09,
+                          width: size.width * 0.4,
+                          decoration: BoxDecoration(
+                            color: AppColors.greenSecobdColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 25, top: 8),
+                            child: TextFormField(
+                              controller: _positioningController,
+                              onChanged: (value) {},
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "0",
+                                hintStyle: TextStyle(
+                                    fontWeight: FontWeight.w200,
+                                    fontSize: 12,
+                                    color: AppColors.greySixColor),
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Through Pass',
+                      'Wall Pass',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
@@ -753,7 +843,7 @@ class _AddStatistikScreenState extends State<AddStatistikScreen> {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 25, top: 8),
                         child: TextFormField(
-                          controller: _throughPassController,
+                          controller: _wallPassController,
                           onChanged: (value) {},
                           style: const TextStyle(
                             fontSize: 13,
@@ -1059,7 +1149,9 @@ class _AddStatistikScreenState extends State<AddStatistikScreen> {
         _saveController.text.isEmpty ||
         _refleksController.text.isEmpty ||
         _jumpController.text.isEmpty ||
-        _throwingController.text.isEmpty) {
+        _throwingController.text.isEmpty ||
+        _positioningController.text.isEmpty ||
+        _wallPassController.text.isEmpty) {
       _showAlertDialog(context, "Please fill in all the fields.");
       return;
     }
@@ -1083,6 +1175,8 @@ class _AddStatistikScreenState extends State<AddStatistikScreen> {
         "Vision": int.parse(_visionController.text),
         "Passing": int.parse(_passingController.text),
         "Through_Pass": int.parse(_throughPassController.text),
+        "Positioning": int.parse(_wallPassController.text),
+        "Wall_Pass": int.parse(_wallPassController.text),
       },
       "keeper": {
         "Save": int.parse(_saveController.text),

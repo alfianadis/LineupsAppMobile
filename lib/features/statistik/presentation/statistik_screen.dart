@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lineups/config/user_provider.dart';
 import 'package:lineups/features/dashboard/presentation/home_tab.dart';
 import 'package:lineups/features/penilaian/presentation/new_penilaian_screen.dart';
 import 'package:lineups/features/statistik/data/statistik_model.dart';
 import 'package:lineups/features/statistik/presentation/add_statistik_screen.dart';
 import 'package:lineups/service/api_service.dart';
 import 'package:lineups/utils/colors.dart';
+import 'package:provider/provider.dart';
 
 class StatistikScreen extends StatefulWidget {
   const StatistikScreen({super.key});
@@ -47,8 +49,35 @@ class _StatistikScreenState extends State<StatistikScreen> {
     return pemainList.where((pemain) => pemain.posisi == posisi).toList();
   }
 
+  String getRecommendedPosition(StatistikModel player) {
+    Map<String, int> stats = {
+      'Anchor': player.taktikal.vision +
+          player.taktikal.passing +
+          player.taktikal.throughPass +
+          player.defence.ballControl,
+      'Pivot': player.taktikal.wallPass +
+          player.attack.shooting +
+          player.defence.ballControl +
+          player.defence.bodyBalance,
+      'Flank': player.attack.acceleration +
+          player.defence.intersep +
+          player.attack.crossing +
+          player.taktikal.positioning,
+      'Kiper': player.keeper.save +
+          player.keeper.refleks +
+          player.keeper.jump +
+          player.keeper.throwing
+    };
+
+    String recommendedPosition =
+        stats.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+    return recommendedPosition;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -492,7 +521,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text(
-                                    'Vison',
+                                    'Vision',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,
@@ -542,6 +571,48 @@ class _StatistikScreenState extends State<StatistikScreen> {
                                   ),
                                   Text(
                                     '${selectedPemainStatistik?.taktikal.throughPass}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Divider(thickness: 0.5),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'Positioning',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${selectedPemainStatistik?.taktikal.positioning}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Divider(thickness: 0.5),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'Wall Pass',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${selectedPemainStatistik?.taktikal.wallPass}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
@@ -655,40 +726,68 @@ class _StatistikScreenState extends State<StatistikScreen> {
                               ),
                               const Divider(thickness: 0.5),
                               const SizedBox(height: 20),
+                              Center(
+                                child: Container(
+                                  height: size.height * 0.06,
+                                  width: size.width * 0.9,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: AppColors.greyTreeColor,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 5, right: 5),
+                                    child: Center(
+                                      child: Text(
+                                        'Di Rekomendasikan Bermain Di Posisi ${getRecommendedPosition(selectedPemainStatistik!)}',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
                             ],
                           ),
                         ),
-                        Center(
-                          child: Container(
-                            width: size.width * 0.8,
-                            height: size.height * 0.07,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.black,
-                            ),
-                            child: InkWell(
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const AssessmentScreen(),
+                        user!.role != 'Pemain'
+                            ? Center(
+                                child: Container(
+                                  width: size.width * 0.8,
+                                  height: size.height * 0.07,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.black,
                                   ),
-                                );
-                              },
-                              child: const Center(
-                                child: Text(
-                                  'Lanjut Penilaian SPK',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 13,
-                                      color: AppColors.whiteTextColor),
+                                  child: InkWell(
+                                    highlightColor: Colors.transparent,
+                                    splashColor: Colors.transparent,
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              const AssessmentScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: const Center(
+                                      child: Text(
+                                        'Lanjut Penilaian SPK',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 13,
+                                            color: AppColors.whiteTextColor),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
+                              )
+                            : SizedBox.shrink(),
                         const SizedBox(height: 30),
                       ],
                     ],
@@ -696,22 +795,24 @@ class _StatistikScreenState extends State<StatistikScreen> {
                 ),
               ),
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const AddStatistikScreen(),
-            ),
-          );
-        },
-        backgroundColor: AppColors.yellow,
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+      floatingActionButton: user!.role != 'Pemain'
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const AddStatistikScreen(),
+                  ),
+                );
+              },
+              backgroundColor: AppColors.yellow,
+              shape: const CircleBorder(),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lineups/config/user_provider.dart';
 import 'package:lineups/features/dashboard/presentation/home_tab.dart';
 import 'package:lineups/features/penilaian/data/models/assesment_model.dart';
 import 'package:lineups/features/penilaian/presentation/new_penilaian_screen.dart';
 import 'package:lineups/service/api_service.dart';
 import 'package:lineups/utils/colors.dart';
+import 'package:provider/provider.dart';
 
 class ResultSPKScreen extends StatefulWidget {
   const ResultSPKScreen({super.key});
@@ -42,7 +44,13 @@ class _ResultSPKScreenState extends State<ResultSPKScreen> {
     setState(() {
       filteredPlayers =
           players.where((player) => player.posisi == selectedPosisi).toList();
+      sortPlayersByScore();
     });
+  }
+
+  void sortPlayersByScore() {
+    filteredPlayers
+        .sort((a, b) => calculateScore(b).compareTo(calculateScore(a)));
   }
 
   double calculateScore(AssessmentModel player) {
@@ -55,6 +63,8 @@ class _ResultSPKScreenState extends State<ResultSPKScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -283,22 +293,24 @@ class _ResultSPKScreenState extends State<ResultSPKScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const AssessmentScreen(),
-            ),
-          );
-        },
-        backgroundColor: AppColors.yellow,
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+      floatingActionButton: user!.role != 'Pemain'
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const AssessmentScreen(),
+                  ),
+                );
+              },
+              backgroundColor: AppColors.yellow,
+              shape: const CircleBorder(),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
