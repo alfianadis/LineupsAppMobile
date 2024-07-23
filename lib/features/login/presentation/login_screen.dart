@@ -80,11 +80,18 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 const Text(
-                  'Selamat Datang',
+                  'Selamat Datang!',
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: Colors.black),
+                ),
+                const Text(
+                  'Silahkan masuk ke akun anda',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.grey),
                 ),
                 const SizedBox(height: 20),
                 Column(

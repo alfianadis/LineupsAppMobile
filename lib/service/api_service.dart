@@ -174,21 +174,20 @@ class ApiService {
     }
   }
 
-  Future<void> updatePlayer(PlayerModel player) async {
-    try {
-      final response = await http.put(
-        Uri.parse('${baseUrl}player/${player.id}'), // Periksa di sini
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(player.toJson()),
-      );
-      if (response.statusCode != 200) {
-        throw Exception('Failed to update player');
-      }
-    } catch (e) {
-      throw Exception('Failed to update player: $e');
-    }
+  Future<bool> updatePlayer(PlayerModel player) async {
+    final response = await http.patch(
+      Uri.parse('${baseUrl}player/${player.id}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(player.toJson()),
+    );
+
+    print('Status Code: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+    print('Request Body: ${jsonEncode(player.toJson())}');
+
+    return response.statusCode == 200;
   }
 
   Future<void> deletePlayer(String id) async {

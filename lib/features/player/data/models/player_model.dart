@@ -14,7 +14,7 @@ class PlayerModel {
   String id;
   String name;
   String position;
-  int jerseyNumber;
+  String jerseyNumber; // Change type to String
   DateTime createdAt;
   DateTime updatedAt;
   int v;
@@ -23,7 +23,7 @@ class PlayerModel {
     required this.id,
     required this.name,
     required this.position,
-    required this.jerseyNumber,
+    required this.jerseyNumber, // Change type to String
     required this.createdAt,
     required this.updatedAt,
     required this.v,
@@ -33,7 +33,7 @@ class PlayerModel {
         id: json["_id"],
         name: json["name"],
         position: json["position"],
-        jerseyNumber: json["jersey_number"],
+        jerseyNumber: json["jersey_number"].toString(), // Convert to String
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
         v: json["__v"],
@@ -43,7 +43,7 @@ class PlayerModel {
         "_id": id,
         "name": name,
         "position": position,
-        "jersey_number": jerseyNumber,
+        "jersey_number": jerseyNumber, // Already String
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
         "__v": v,

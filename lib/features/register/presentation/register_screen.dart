@@ -87,11 +87,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               children: [
                 const Text(
-                  'Selamat Datang',
+                  'Buat Akun Baru',
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: Colors.black),
+                ),
+                const Text(
+                  'Silahkan isi data anda ',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.grey),
                 ),
                 const SizedBox(height: 20),
                 Column(

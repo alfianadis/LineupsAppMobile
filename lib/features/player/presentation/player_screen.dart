@@ -3,6 +3,7 @@ import 'package:lineups/config/user_provider.dart';
 import 'package:lineups/features/dashboard/presentation/home_tab.dart';
 import 'package:lineups/features/player/data/models/player_model.dart';
 import 'package:lineups/features/player/presentation/add_player_screen.dart';
+import 'package:lineups/features/player/presentation/edit_player_screen.dart';
 import 'package:lineups/service/api_service.dart';
 import 'package:lineups/utils/colors.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +27,22 @@ class _PlayerScreenState extends State<PlayerScreen> {
   Future<void> _refreshPlayers() async {
     setState(() {
       futurePlayers = ApiService().getPlayers();
+    });
+  }
+
+  Future<void> _deletePlayer(String id) async {
+    await ApiService().deletePlayer(id);
+    _refreshPlayers();
+  }
+
+  void _editPlayer(PlayerModel player) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => EditPlayerScreen(player: player),
+      ),
+    ).then((_) {
+      _refreshPlayers();
     });
   }
 
@@ -113,7 +130,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 15),
                                 child: Container(
-                                  height: size.height * 0.13,
+                                  height: size.height * 0.16,
                                   width: size.width,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
@@ -123,75 +140,75 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                         color: Colors.grey.withOpacity(0.5),
                                         spreadRadius: 1,
                                         blurRadius: 2,
-                                        offset: const Offset(
-                                            0, 2), // changes position of shadow
+                                        offset: const Offset(0, 2),
                                       ),
                                     ],
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.only(
                                         left: 15, right: 15),
-                                    child: Row(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
-                                        Container(
-                                          width: 70,
-                                          height: 70,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: AssetImage(
-                                                player.position == 'Kiper'
-                                                    ? 'assets/images/player_jersey.png'
-                                                    : 'assets/images/kiper_jersey.png',
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                height: 23,
-                                                width: size.width * 0.2,
-                                                decoration: BoxDecoration(
-                                                  color: Colors
-                                                      .orange, // Example color
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    player.position,
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.black,
-                                                    ),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: 70,
+                                              height: 70,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: DecorationImage(
+                                                  fit: BoxFit.cover,
+                                                  image: AssetImage(
+                                                    player.position == 'Kiper'
+                                                        ? 'assets/images/player_jersey.png'
+                                                        : 'assets/images/kiper_jersey.png',
                                                   ),
                                                 ),
                                               ),
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                player.name,
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w200,
-                                                ),
+                                            ),
+                                            const SizedBox(width: 15),
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    height: 23,
+                                                    width: size.width * 0.2,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.orange,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        player.position,
+                                                        style: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  Text(
+                                                    player.name,
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w200,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
+                                            ),
                                             Text(
                                               player.jerseyNumber.toString(),
                                               style: const TextStyle(
@@ -201,6 +218,53 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                             ),
                                           ],
                                         ),
+                                        if (user!.role != 'Pemain')
+                                          Row(
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  _editPlayer(player);
+                                                },
+                                                child: Container(
+                                                  height: size.height * 0.04,
+                                                  width: size.height * 0.08,
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors.greenColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      'Edit',
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: AppColors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              InkWell(
+                                                onTap: () {
+                                                  _showDeleteConfirmationDialog(
+                                                      player.id);
+                                                },
+                                                child: const Text(
+                                                  'Delete',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: AppColors
+                                                        .redColorDasboard,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                       ],
                                     ),
                                   ),
@@ -237,6 +301,74 @@ class _PlayerScreenState extends State<PlayerScreen> {
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
+  }
+
+  Future<void> _showDeleteConfirmationDialog(String id) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14.0),
+          ),
+          title: const Text(
+            'Apakah Anda Yakin Untuk Menghapus Kriteria Ini ?',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+          ),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.30,
+                  height: 56,
+                  decoration: BoxDecoration(
+                      color: AppColors.greyTreeColor,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: const Center(
+                    child: Text(
+                      'Batal',
+                      style:
+                          TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ),
+              ),
+              InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _deletePlayer(id);
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.30,
+                  height: 56,
+                  decoration: BoxDecoration(
+                      color: AppColors.primaryColor,
+                      borderRadius: BorderRadius.circular(8)),
+                  child: const Center(
+                    child: Text(
+                      'Hapus',
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
