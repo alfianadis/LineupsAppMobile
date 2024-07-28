@@ -48,9 +48,9 @@ class _LineupScreenState extends State<LineupScreen> {
     List<AssessmentModel> pivotCadangan =
         _getBestPlayersByPosition('Pivot', 2, 1);
     List<AssessmentModel> flankCadangan =
-        _getBestPlayersByPosition('Flank', 4, 2);
+        _getBestPlayersByPosition('Flank', 2, 1);
     List<AssessmentModel> kiperCadangan =
-        _getBestPlayersByPosition('Kiper', 2, 1);
+        _getBestPlayersByPosition('Kiper', 1, 1);
 
     players = [
       Player(

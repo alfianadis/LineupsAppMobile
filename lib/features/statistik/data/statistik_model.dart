@@ -119,29 +119,29 @@ class Defence {
 
 class Keeper {
   int save;
-  int refleks;
-  int jump;
-  int throwing;
+  int goalconceded;
+  int split;
+  int buildup;
 
   Keeper({
     required this.save,
-    required this.refleks,
-    required this.jump,
-    required this.throwing,
+    required this.goalconceded,
+    required this.split,
+    required this.buildup,
   });
 
   factory Keeper.fromJson(Map<String, dynamic> json) => Keeper(
         save: json["Save"],
-        refleks: json["Refleks"],
-        jump: json["Jump"],
-        throwing: json["Throwing"],
+        goalconceded: json["Goal_Conceded"],
+        split: json["Split"],
+        buildup: json["Build_Up"],
       );
 
   Map<String, dynamic> toJson() => {
         "Save": save,
-        "Refleks": refleks,
-        "Jump": jump,
-        "Throwing": throwing,
+        "Goal_Conceded": goalconceded,
+        "Split": split,
+        "Build_Up": buildup,
       };
 }
 

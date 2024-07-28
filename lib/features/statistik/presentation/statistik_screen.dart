@@ -50,25 +50,62 @@ class _StatistikScreenState extends State<StatistikScreen> {
   }
 
   String getRecommendedPosition(StatistikModel player) {
-    Map<String, int> stats = {
-      'Anchor': player.taktikal.vision +
-          player.taktikal.passing +
-          player.taktikal.throughPass +
-          player.defence.ballControl,
-      'Pivot': player.taktikal.wallPass +
-          player.attack.shooting +
-          player.defence.ballControl +
-          player.defence.bodyBalance,
-      'Flank': player.attack.acceleration +
-          player.defence.intersep +
-          player.attack.crossing +
-          player.taktikal.positioning,
-      'Kiper': player.keeper.save +
-          player.keeper.refleks +
-          player.keeper.jump +
-          player.keeper.throwing
+    // Definisikan nilai maksimum untuk normalisasi
+    const int maxGol = 10;
+    const int maxShooting = 20;
+    const int maxAcceleration = 20;
+    const int maxCrossing = 15;
+    const int maxBallControl = 30;
+    const int maxBodyBalance = 30;
+    const int maxEndurance = 100;
+    const int maxIntersep = 15;
+    const int maxVision = 15;
+    const int maxPassing = 100;
+    const int maxThroughPass = 20;
+    const int maxPositioning = 15;
+    const int maxWallPass = 15;
+    const int maxSave = 15;
+    const int maxGoalConceded = 10;
+    const int maxSplit = 15;
+    const int maxBuildUp = 15;
+
+    // Normalisasi nilai statistik
+    double normalize(int value, int maxValue) {
+      return value / maxValue;
+    }
+
+    // Bobot untuk setiap posisi
+    double anchorScore = (normalize(player.taktikal.vision, maxVision) * 0.3) +
+        (normalize(player.taktikal.passing, maxPassing) * 0.3) +
+        (normalize(player.taktikal.throughPass, maxThroughPass) * 0.2) +
+        (normalize(player.defence.ballControl, maxBallControl) * 0.2);
+
+    double pivotScore =
+        (normalize(player.taktikal.wallPass, maxWallPass) * 0.25) +
+            (normalize(player.attack.shooting, maxShooting) * 0.25) +
+            (normalize(player.defence.ballControl, maxBallControl) * 0.25) +
+            (normalize(player.defence.bodyBalance, maxBodyBalance) * 0.25);
+
+    double flankScore =
+        (normalize(player.attack.acceleration, maxAcceleration) * 0.25) +
+            (normalize(player.defence.intersep, maxIntersep) * 0.25) +
+            (normalize(player.attack.crossing, maxCrossing) * 0.25) +
+            (normalize(player.taktikal.positioning, maxPositioning) * 0.25);
+
+    double kiperScore = (normalize(player.keeper.save, maxSave) * 0.4) +
+        (normalize(player.keeper.goalconceded, maxGoalConceded) * 0.4) -
+        (normalize(player.keeper.split, maxSplit) * 0.2) +
+        (normalize(player.keeper.buildup, maxBuildUp) * 0.2);
+
+    // Simpan skor dalam map
+    Map<String, double> stats = {
+      'Anchor': anchorScore,
+      'Pivot': pivotScore,
+      'Flank': flankScore,
+      'Kiper': kiperScore
     };
 
+    // Tentukan posisi terbaik
     String recommendedPosition =
         stats.entries.reduce((a, b) => a.value > b.value ? a : b).key;
     return recommendedPosition;
@@ -674,7 +711,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
                                     ),
                                   ),
                                   Text(
-                                    '${selectedPemainStatistik?.keeper.refleks}',
+                                    '${selectedPemainStatistik?.keeper.goalconceded}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
@@ -695,7 +732,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
                                     ),
                                   ),
                                   Text(
-                                    '${selectedPemainStatistik?.keeper.jump}',
+                                    '${selectedPemainStatistik?.keeper.split}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
@@ -716,7 +753,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
                                     ),
                                   ),
                                   Text(
-                                    '${selectedPemainStatistik?.keeper.throwing}',
+                                    '${selectedPemainStatistik?.keeper.buildup}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,

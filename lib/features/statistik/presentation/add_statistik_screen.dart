@@ -935,7 +935,7 @@ class _AddStatistikScreenState extends State<AddStatistikScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Refleks',
+                          'Goal Conceded',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -983,7 +983,7 @@ class _AddStatistikScreenState extends State<AddStatistikScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Jump',
+                          'Split',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -1025,7 +1025,7 @@ class _AddStatistikScreenState extends State<AddStatistikScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Throwing',
+                          'Build Up',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -1180,9 +1180,9 @@ class _AddStatistikScreenState extends State<AddStatistikScreen> {
       },
       "keeper": {
         "Save": int.parse(_saveController.text),
-        "Refleks": int.parse(_refleksController.text),
-        "Jump": int.parse(_jumpController.text),
-        "Throwing": int.parse(_throwingController.text),
+        "Goal_Conceded": int.parse(_refleksController.text),
+        "Split": int.parse(_jumpController.text),
+        "Build_Up": int.parse(_throwingController.text),
       }
     };
 
