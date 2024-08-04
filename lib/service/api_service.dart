@@ -9,6 +9,7 @@ import 'package:lineups/features/kriteria/data/models/kriteria_model.dart';
 import 'package:lineups/features/login/data/models/auth_response.dart';
 import 'package:lineups/features/penilaian/data/models/assesment_model.dart';
 import 'package:lineups/features/player/data/models/player_model.dart';
+import 'package:lineups/features/statistik/data/emosional_model.dart';
 import 'package:lineups/features/statistik/data/statistik_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,7 @@ class ApiService {
       BuildContext context, String username, String password) async {
     try {
       final response = await http.post(
-        Uri.parse('${baseUrl}auth/login'), // Periksa di sini
+        Uri.parse('${baseUrl}auth/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -35,15 +36,12 @@ class ApiService {
         final accessToken = authResponse['access_token'];
         final userJson = authResponse['user'];
 
-        // Membuat objek User dari JSON
         final user = User.fromJson(userJson);
 
-        // Simpan user di SharedPreferences untuk menjaga state
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('access_token', accessToken);
         await prefs.setString('user', jsonEncode(user.toJson()));
 
-        // Update UserProvider
         Provider.of<UserProvider>(context, listen: false).setUser(user);
 
         return AuthResponse(
@@ -65,7 +63,7 @@ class ApiService {
       String username, String password, String fullName, String role) async {
     try {
       final response = await http.post(
-        Uri.parse('${baseUrl}auth/register'), // Periksa di sini
+        Uri.parse('${baseUrl}auth/register'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -88,8 +86,7 @@ class ApiService {
 
   Future<List<ScheduleModel>> fetchSchedules() async {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}schedule')); // Periksa di sini
+      final response = await http.get(Uri.parse('${baseUrl}schedule'));
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonResponse = json.decode(response.body);
@@ -107,7 +104,7 @@ class ApiService {
   Future<ScheduleModel?> addSchedule(ScheduleModel schedule) async {
     try {
       final response = await http.post(
-        Uri.parse('${baseUrl}schedule'), // Periksa di sini
+        Uri.parse('${baseUrl}schedule'),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(schedule.toJson()),
       );
@@ -124,8 +121,7 @@ class ApiService {
 
   Future<List<PlayerModel>> getPlayers() async {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}player')); // Periksa di sini
+      final response = await http.get(Uri.parse('${baseUrl}player'));
       if (response.statusCode == 200) {
         return playerModelFromJson(response.body);
       } else {
@@ -138,8 +134,8 @@ class ApiService {
 
   Future<List<PlayerModel>> fetchPlayersByPosition(String position) async {
     try {
-      final response = await http.get(
-          Uri.parse('${baseUrl}player/position/$position')); // Periksa di sini
+      final response =
+          await http.get(Uri.parse('${baseUrl}player/position/$position'));
       if (response.statusCode == 200) {
         return playerModelFromJson(response.body);
       } else {
@@ -153,7 +149,7 @@ class ApiService {
   Future<bool> addPlayer(
       String name, String position, String jerseyNumber) async {
     try {
-      final url = Uri.parse('${baseUrl}player'); // Periksa di sini
+      final url = Uri.parse('${baseUrl}player');
 
       var request = http.MultipartRequest('POST', url)
         ..fields['name'] = name
@@ -192,8 +188,7 @@ class ApiService {
 
   Future<void> deletePlayer(String id) async {
     try {
-      final response = await http
-          .delete(Uri.parse('${baseUrl}player/$id')); // Periksa di sini
+      final response = await http.delete(Uri.parse('${baseUrl}player/$id'));
       if (response.statusCode != 200) {
         throw Exception('Failed to delete player');
       }
@@ -204,8 +199,7 @@ class ApiService {
 
   Future<List<AspekModel>> getAspeks() async {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}aspect')); // Periksa di sini
+      final response = await http.get(Uri.parse('${baseUrl}aspect'));
       if (response.statusCode == 200) {
         Iterable jsonResponse = json.decode(response.body);
         return jsonResponse.map((model) => AspekModel.fromJson(model)).toList();
@@ -220,7 +214,7 @@ class ApiService {
   Future<AspekModel> createAspekModel(AspekModel aspekModel) async {
     try {
       final response = await http.post(
-        Uri.parse('${baseUrl}aspect'), // Periksa di sini
+        Uri.parse('${baseUrl}aspect'),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(aspekModel.toJson()),
       );
@@ -237,7 +231,7 @@ class ApiService {
   Future<bool> updateAspek(AspekModel aspek) async {
     try {
       final response = await http.patch(
-        Uri.parse('${baseUrl}aspect/${aspek.id}'), // Periksa di sini
+        Uri.parse('${baseUrl}aspect/${aspek.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -259,7 +253,7 @@ class ApiService {
   Future<bool> deleteAspek(String id) async {
     try {
       final response = await http.delete(
-        Uri.parse('${baseUrl}aspect/$id'), // Periksa di sini
+        Uri.parse('${baseUrl}aspect/$id'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -276,8 +270,7 @@ class ApiService {
 
   Future<List<KriteriaModel>> getKriteria() async {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}criteria')); // Periksa di sini
+      final response = await http.get(Uri.parse('${baseUrl}criteria'));
       if (response.statusCode == 200) {
         Iterable jsonResponse = json.decode(response.body);
         return jsonResponse
@@ -293,8 +286,7 @@ class ApiService {
 
   Future<List<KriteriaModel>> fetchCriteria() async {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}criteria')); // Periksa di sini
+      final response = await http.get(Uri.parse('${baseUrl}criteria'));
       if (response.statusCode == 200) {
         return kriteriaModelFromJson(response.body);
       } else {
@@ -324,7 +316,7 @@ class ApiService {
   Future<bool> addKriteria(KriteriaModel kriteria) async {
     try {
       final response = await http.post(
-        Uri.parse('${baseUrl}criteria'), // Periksa di sini
+        Uri.parse('${baseUrl}criteria'),
         headers: {"Content-Type": "application/json"},
         body: json.encode(kriteria.toJson()),
       );
@@ -337,7 +329,7 @@ class ApiService {
   Future<bool> updateKriteria(KriteriaModel kriteria) async {
     try {
       final response = await http.patch(
-        Uri.parse('${baseUrl}criteria/${kriteria.id}'), // Periksa di sini
+        Uri.parse('${baseUrl}criteria/${kriteria.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -357,7 +349,7 @@ class ApiService {
   Future<bool> deleteKriteria(String id) async {
     try {
       final response = await http.delete(
-        Uri.parse('${baseUrl}criteria/$id'), // Periksa di sini
+        Uri.parse('${baseUrl}criteria/$id'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -374,8 +366,7 @@ class ApiService {
 
   Future<List<AssessmentModel>> fetchPlayers() async {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}assassment')); // Periksa di sini
+      final response = await http.get(Uri.parse('${baseUrl}assassment'));
       if (response.statusCode == 200) {
         List data = jsonDecode(response.body);
         return data.map((item) => AssessmentModel.fromJson(item)).toList();
@@ -389,8 +380,7 @@ class ApiService {
 
   Future<List<AssessmentModel>> fetchPlayerData() async {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}assassment')); // Periksa di sini
+      final response = await http.get(Uri.parse('${baseUrl}assassment'));
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
         return data.map((json) => AssessmentModel.fromJson(json)).toList();
@@ -402,25 +392,58 @@ class ApiService {
     }
   }
 
-  Future<http.Response> submitAssessment(Map<String, dynamic> data) async {
-    try {
-      final response = await http.post(
-        Uri.parse('${baseUrl}assassment'), // Periksa di sini
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(data),
-      );
-      return response;
-    } catch (e) {
-      throw Exception('Failed to submit assessment: $e');
+  Future<List<dynamic>> fetchAllAssessments() async {
+    final url = '${baseUrl}assassment';
+    print('Fetching all assessments');
+    final response = await http.get(Uri.parse(url));
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load assessments');
     }
+  }
+
+  Future<http.Response> submitAssessment(Map<String, dynamic> data) async {
+    final url = '${baseUrl}assassment';
+    print('Submitting new assessment: ${jsonEncode(data)}');
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(data),
+    );
+    print('Submit response status: ${response.statusCode}');
+    print('Submit response body: ${response.body}');
+    return response;
+  }
+
+  Future<http.Response> updateAssessment(
+      String id, Map<String, dynamic> data) async {
+    final url = '${baseUrl}assassment/$id';
+    print('Updating assessment with ID $id: ${jsonEncode(data)}');
+    final response = await http.patch(
+      Uri.parse(url),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(data),
+    );
+    print('Update response status: ${response.statusCode}');
+    print('Update response body: ${response.body}');
+    return response;
+  }
+
+  Future<http.Response> fetchAssessmentByPlayerName(String playerName) async {
+    final url = '${baseUrl}assassment?player_name=$playerName';
+    print('Fetching assessment for player: $playerName');
+    final response = await http.get(Uri.parse(url));
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    return response;
   }
 
   Future<List<StatistikModel>> fetchPemain() async {
     try {
-      final response =
-          await http.get(Uri.parse('${baseUrl}statistic')); // Periksa di sini
+      final response = await http.get(Uri.parse('${baseUrl}statistic'));
 
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
@@ -435,7 +458,7 @@ class ApiService {
 
   Future<http.Response> submitStatistik(Map<String, dynamic> data) async {
     try {
-      final url = Uri.parse('${baseUrl}statistic'); // Periksa di sini
+      final url = Uri.parse('${baseUrl}statistic');
       final headers = {"Content-Type": "application/json"};
       final body = jsonEncode(data);
 
@@ -443,6 +466,17 @@ class ApiService {
       return response;
     } catch (e) {
       throw Exception('Failed to submit statistik: $e');
+    }
+  }
+
+  Future<List<EmosionalModel>> fetchEmotionalData() async {
+    final response = await http.get(Uri.parse('${baseUrl}emotional'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((data) => EmosionalModel.fromJson(data)).toList();
+    } else {
+      throw Exception('Failed to load emotional data');
     }
   }
 }

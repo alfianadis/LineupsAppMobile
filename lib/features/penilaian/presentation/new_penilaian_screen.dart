@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lineups/features/kriteria/data/models/kriteria_model.dart';
@@ -47,7 +46,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
     try {
       final criteria = await _apiService.fetchCriteria();
       setState(() {
-        _criteria = criteria;
+        _criteria = criteria.cast<KriteriaModel>();
       });
     } catch (e) {
       print('Error fetching criteria: $e');
@@ -484,7 +483,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
     try {
       final players = await _apiService.fetchPlayersByPosition(position);
       setState(() {
-        _players = players;
+        _players = players.cast<PlayerModel>();
       });
     } catch (e) {
       print('Error fetching players: $e');
@@ -944,28 +943,54 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
     print('Data to be sent: ${jsonEncode(assessmentData)}');
 
     try {
-      final response = await _apiService.submitAssessment(assessmentData);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        // Handle success
-        print('Assessment submitted successfully');
-        // Process the response if needed
-        final responseData = jsonDecode(response.body);
-        print('Response Data: $responseData');
-        // Show success message or navigate to another screen
-        // Navigate to SplashSuccessScreen
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SplashSuccessSpk()),
-        );
+      // Fetch all assessments to check if player already exists
+      final allAssessments = await _apiService.fetchAllAssessments();
+      bool playerExists = false;
+      String? existingAssessmentId;
+
+      for (var assessment in allAssessments) {
+        if (assessment["player_name"] == selectedPemain) {
+          playerExists = true;
+          existingAssessmentId = assessment["_id"];
+          break;
+        }
+      }
+
+      if (playerExists && existingAssessmentId != null) {
+        // Player exists, update the existing assessment
+        print('Existing assessment ID: $existingAssessmentId');
+        final response = await _apiService.updateAssessment(
+            existingAssessmentId, assessmentData);
+
+        if (response.statusCode == 200) {
+          print('Assessment updated successfully');
+          // Show success message or navigate to another screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SplashSuccessSpk()),
+          );
+        } else {
+          print(
+              'Error updating assessment: ${response.statusCode} ${response.body}');
+        }
       } else {
-        // Handle error
-        print(
-            'Error submitting assessment: ${response.statusCode} ${response.body}');
-        // Show error message
+        // Player does not exist, create a new assessment
+        final response = await _apiService.submitAssessment(assessmentData);
+
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          print('Assessment submitted successfully');
+          // Show success message or navigate to another screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SplashSuccessSpk()),
+          );
+        } else {
+          print(
+              'Error submitting assessment: ${response.statusCode} ${response.body}');
+        }
       }
     } catch (e) {
       print('Error: $e');
-      // Show error message
     }
   }
 

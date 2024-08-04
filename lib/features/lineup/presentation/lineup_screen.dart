@@ -135,12 +135,13 @@ class _LineupScreenState extends State<LineupScreen> {
     var coreFactors = criteria.coreFactor.keys.toList();
     var secondaryFactors = criteria.secondaryFactor.keys.toList();
 
+//inisialisasi nilai dimulai dengan 0
     double coreScore = 0;
     double secondaryScore = 0;
 
     for (var factor in coreFactors) {
-      double selisih = player.aspect.first.calculateSelisih(factor);
-      coreScore += player.aspect.first.getBobotNilai(selisih);
+      double selisih = player.aspect.first.calculateSelisih(factor); // menghitung selisih nilai
+      coreScore += player.aspect.first.getBobotNilai(selisih); //mengembalikan bobot nilai berdasarkan selisih yang dihitung.
     }
     double ncf = coreScore / coreFactors.length;
 
@@ -148,7 +149,7 @@ class _LineupScreenState extends State<LineupScreen> {
       double selisih = player.aspect.first.calculateSelisih(factor);
       secondaryScore += player.aspect.first.getBobotNilai(selisih);
     }
-    double nsf = secondaryScore / secondaryFactors.length;
+    double nsf = secondaryScore / secondaryFactors.length; 
 
     double totalScore = (ncf * 0.6) + (nsf * 0.4);
 

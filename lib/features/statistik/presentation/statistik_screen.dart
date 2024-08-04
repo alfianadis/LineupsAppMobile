@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lineups/config/user_provider.dart';
 import 'package:lineups/features/dashboard/presentation/home_tab.dart';
 import 'package:lineups/features/penilaian/presentation/new_penilaian_screen.dart';
+import 'package:lineups/features/statistik/data/emosional_model.dart';
 import 'package:lineups/features/statistik/data/statistik_model.dart';
 import 'package:lineups/features/statistik/presentation/add_statistik_screen.dart';
 import 'package:lineups/service/api_service.dart';
@@ -20,7 +21,9 @@ class _StatistikScreenState extends State<StatistikScreen> {
   String selectedPosisi = '';
   String selectedPemain = '';
   List<StatistikModel> pemainList = [];
+  List<EmosionalModel> emotionalList = [];
   StatistikModel? selectedPemainStatistik;
+  EmosionalModel? selectedPemainEmosi;
   bool isLoading = true;
 
   @override
@@ -32,8 +35,10 @@ class _StatistikScreenState extends State<StatistikScreen> {
   Future<void> fetchPemain() async {
     try {
       List<StatistikModel> pemain = await ApiService().fetchPemain();
+      List<EmosionalModel> emosi = await ApiService().fetchEmotionalData();
       setState(() {
         pemainList = pemain;
+        emotionalList = emosi;
         isLoading = false;
       });
     } catch (e) {
@@ -47,6 +52,16 @@ class _StatistikScreenState extends State<StatistikScreen> {
 
   List<StatistikModel> getPemainByPosisi(String posisi) {
     return pemainList.where((pemain) => pemain.posisi == posisi).toList();
+  }
+
+  EmosionalModel? getEmotionalByPlayer(String name, String position) {
+    try {
+      return emotionalList.firstWhere(
+        (emosi) => emosi.name == name && emosi.position == position,
+      );
+    } catch (e) {
+      return null;
+    }
   }
 
   String getRecommendedPosition(StatistikModel player) {
@@ -207,6 +222,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
                                           selectedPosisi = '';
                                           selectedPemain = '';
                                           selectedPemainStatistik = null;
+                                          selectedPemainEmosi = null;
                                         });
                                       },
                                       child: SvgPicture.asset(
@@ -282,6 +298,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
                                         setState(() {
                                           selectedPemain = '';
                                           selectedPemainStatistik = null;
+                                          selectedPemainEmosi = null;
                                         });
                                       },
                                       child: SvgPicture.asset(
@@ -776,6 +793,174 @@ class _StatistikScreenState extends State<StatistikScreen> {
                                         left: 5, right: 5),
                                     child: Center(
                                       child: Text(
+                                        'Penilaian Emosional',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              if (selectedPemainEmosi != null) ...[
+                                const Text(
+                                  'Week 1',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Kedisiplinan',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    Text(
+                                      selectedPemainEmosi?.disciplineScore ??
+                                          'N/A',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(thickness: 0.5),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Motivasi dan Semangat',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    Text(
+                                      selectedPemainEmosi?.motivationScore ??
+                                          'N/A',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(thickness: 0.5),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Leadership',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    Text(
+                                      selectedPemainEmosi?.leadershipScore ??
+                                          'N/A',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(thickness: 0.5),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Teamwork',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    Text(
+                                      selectedPemainEmosi?.teamworkScore ??
+                                          'N/A',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(thickness: 0.5),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Kontrol Emosi',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    Text(
+                                      selectedPemainEmosi
+                                              ?.emotionalControlScore ??
+                                          'N/A',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(thickness: 0.5),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Perkembangan Pemain',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    Text(
+                                      selectedPemainEmosi?.developmentScore ??
+                                          'N/A',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(thickness: 0.5),
+                              ],
+                              const SizedBox(height: 20),
+                              Center(
+                                child: Container(
+                                  height: size.height * 0.06,
+                                  width: size.width * 0.9,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: AppColors.greyTreeColor,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 5, right: 5),
+                                    child: Center(
+                                      child: Text(
                                         'Di Rekomendasikan Bermain Di Posisi ${getRecommendedPosition(selectedPemainStatistik!)}',
                                         style: TextStyle(
                                           fontWeight: FontWeight.w500,
@@ -786,7 +971,6 @@ class _StatistikScreenState extends State<StatistikScreen> {
                                   ),
                                 ),
                               ),
-
                               const SizedBox(height: 20),
                             ],
                           ),
@@ -906,6 +1090,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
                                 selectedPosisi = listPosisi[index];
                                 selectedPemain = '';
                                 selectedPemainStatistik = null;
+                                selectedPemainEmosi = null;
                               });
                               Navigator.pop(context);
                             },
@@ -997,6 +1182,9 @@ class _StatistikScreenState extends State<StatistikScreen> {
                               setState(() {
                                 selectedPemain = listPlayer[index].playerName;
                                 selectedPemainStatistik = listPlayer[index];
+                                selectedPemainEmosi = getEmotionalByPlayer(
+                                    listPlayer[index].playerName,
+                                    selectedPosisi);
                               });
                               Navigator.pop(context);
                             },
